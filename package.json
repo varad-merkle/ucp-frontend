@@ -1,25 +1,25 @@
 {
-  "name": "ucp-chatbot-frontend",
-  "version": "0.1.0",
+  "name": "frontend",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "next": "^14.0.0",
-    "axios": "^1.6.0"
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "typescript": "^5",
-    "tailwindcss": "^3.3.0",
-    "autoprefixer": "^10.4.14",
-    "postcss": "^8.4.31"
+    "@types/node": "^24.13.3",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "@vitejs/plugin-react": "^6.1.1",
+    "oxlint": "^1.81.0",
+    "typescript": "~6.0.2",
+    "vite": "^8.3.0"
   }
 }
