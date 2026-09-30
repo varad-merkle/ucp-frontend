@@ -1,0 +1,133 @@
+/* Design tokens. Everything visual in the app resolves back to this file. */
+
+:root {
+  /* Surfaces, from deepest background to raised card */
+  --bg: #090b11;
+  --surface: #0f1219;
+  --surface-2: #151925;
+  --surface-3: #1c2130;
+  --overlay: rgba(6, 8, 13, 0.72);
+
+  color-scheme: dark;
+
+  /* Lines */
+  --border: #232838;
+  --border-strong: #313849;
+  --border-hover: #3d4560;
+  --border-accent: #3b4ce0;
+
+  /* Text */
+  --text: #e8ebf2;
+  --text-muted: #949cb2;
+  --text-faint: #6a7288;
+
+  /* Brand + status */
+  --accent: #6472ff;
+  --accent-hover: #7b86ff;
+  --accent-soft: rgba(100, 114, 255, 0.14);
+  --accent-ring: rgba(100, 114, 255, 0.45);
+  --accent-text: #b9beff;
+  --cyan: #2ed3e8;
+  --success: #3ddc97;
+  --success-soft: rgba(61, 220, 151, 0.13);
+  --warning: #f5b544;
+  --warning-soft: rgba(245, 181, 68, 0.13);
+  --danger: #ff6b7a;
+  --danger-soft: rgba(255, 107, 122, 0.13);
+
+  /* Code / JSON panels */
+  --code-bg: #070910;
+  --code-text: #b9c2d9;
+
+  /* Type */
+  --font-sans: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Cascadia Code', 'SF Mono', Consolas, monospace;
+
+  --text-xs: 0.6875rem;
+  --text-sm: 0.8125rem;
+  --text-base: 0.9375rem;
+  --text-lg: 1.0625rem;
+  --text-xl: 1.375rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2.25rem;
+
+  /* Space */
+  --s-1: 4px;
+  --s-2: 8px;
+  --s-3: 12px;
+  --s-4: 16px;
+  --s-5: 20px;
+  --s-6: 24px;
+  --s-8: 32px;
+  --s-10: 40px;
+  --s-12: 48px;
+
+  /* Radii */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+  --r-full: 999px;
+
+  /* Elevation */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
+  --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.5);
+
+  /* Motion */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --fast: 120ms;
+  --normal: 220ms;
+
+  /* Layout */
+  --sidebar-w: 248px;
+  --topbar-h: 60px;
+  --inspector-w: 480px;
+}
+
+/* Light theme: only the colors change, everything else is shared. */
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --bg: #f5f6fa;
+  --surface: #ffffff;
+  --surface-2: #f0f2f7;
+  --surface-3: #e6e9f1;
+  --overlay: rgba(20, 24, 36, 0.35);
+
+  --border: #dde1ea;
+  --border-strong: #c9ceda;
+  --border-hover: #b3b9c8;
+  --border-accent: #4f5de6;
+
+  --text: #161a26;
+  --text-muted: #525a70;
+  --text-faint: #7a8298;
+
+  --accent: #4f5de6;
+  --accent-hover: #3f4cd6;
+  --accent-soft: rgba(79, 93, 230, 0.1);
+  --accent-ring: rgba(79, 93, 230, 0.35);
+  --accent-text: #3440c4;
+  --cyan: #0ea5c0;
+  --success: #12a06a;
+  --success-soft: rgba(18, 160, 106, 0.12);
+  --warning: #b87a0b;
+  --warning-soft: rgba(184, 122, 11, 0.12);
+  --danger: #d6344a;
+  --danger-soft: rgba(214, 52, 74, 0.1);
+
+  --code-bg: #f3f4f8;
+  --code-text: #2a3145;
+
+  --shadow-sm: 0 1px 2px rgba(20, 24, 36, 0.08);
+  --shadow-md: 0 8px 24px rgba(20, 24, 36, 0.1);
+  --shadow-lg: 0 24px 60px rgba(20, 24, 36, 0.16);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --fast: 0ms;
+    --normal: 0ms;
+  }
+}
