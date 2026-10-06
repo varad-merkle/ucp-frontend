@@ -1,6 +1,6 @@
 /** Client for the UCP agent's chat and inspection endpoints. */
 
-import type { ChatReply, Exchange, Health } from './types'
+import type { ChatReply, CheckoutDetails, Exchange, Health } from './types'
 
 export class AgentError extends Error {}
 
@@ -27,6 +27,13 @@ export const api = {
     json<ChatReply>('/api/chat', {
       method: 'POST',
       body: JSON.stringify({ message, session_id: sessionId }),
+    }),
+
+  /** The checkout card's delivery details form, saved in one update. */
+  checkoutDetails: (sessionId: string, details: CheckoutDetails) =>
+    json<ChatReply>('/api/checkout/details', {
+      method: 'POST',
+      body: JSON.stringify({ session_id: sessionId, details }),
     }),
 
   health: () => json<Health>('/api/health'),

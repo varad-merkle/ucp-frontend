@@ -92,6 +92,9 @@ export type UcpMessage = {
   type: 'error' | 'warning' | 'info'
   code?: string
   content: string
+  /** JSONPath of the field the message is about, e.g. "$.buyer.phone_number". */
+  path?: string | null
+  severity?: string | null
 }
 
 export type CheckoutView = {
@@ -126,8 +129,23 @@ export type CheckoutView = {
   instruments: { id: string; label: string; handler: string; selected: boolean }[]
   messages: UcpMessage[]
   links: { type: string; url: string; title?: string }[]
+  /** Details the shopper entered, to pre-fill the delivery details form. */
+  details: CheckoutDetails
   /** Where the buyer finishes on the store's own checkout page (UCP hand-off). */
   continue_url?: string
+}
+
+/** The checkout card's delivery details form. Country is a two-letter ISO code. */
+export type CheckoutDetails = {
+  email: string
+  first_name: string
+  last_name: string
+  phone: string
+  street_address: string
+  city: string
+  region: string
+  postal_code: string
+  country: string
 }
 
 export type OrderView = {

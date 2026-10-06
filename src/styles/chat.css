@@ -1518,3 +1518,66 @@
     display: none;
   }
 }
+
+/* Checkout card: delivery details form */
+.detailsform {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-3);
+}
+
+.detailsform-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--s-2) var(--s-3);
+}
+
+.detailsform-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+  font-size: var(--text-xs);
+  color: var(--text-muted);
+}
+
+.detailsform-field.wide {
+  grid-column: 1 / -1;
+}
+
+.detailsform-field input {
+  width: 100%;
+  padding: 7px var(--s-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-sm);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  font-size: var(--text-sm);
+}
+
+.detailsform-field input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-ring);
+}
+
+.detailsform .btn {
+  align-self: flex-start;
+}
+
+@media (max-width: 520px) {
+  .detailsform-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.detailsform-field.invalid input {
+  border-color: var(--danger);
+}
+
+.detailsform-error {
+  color: var(--danger);
+  font-style: normal;
+  font-size: var(--text-xs);
+}

@@ -1,20 +1,6 @@
 /** Small shared presentational bits. */
 
-import type { ReactNode } from 'react'
-
 import type { Rating as RatingType } from '../lib/types'
-
-export function Badge({
-  tone = 'neutral',
-  mono,
-  children,
-}: {
-  tone?: 'neutral' | 'accent' | 'success' | 'warning' | 'danger'
-  mono?: boolean
-  children: ReactNode
-}) {
-  return <span className={`badge ${tone}${mono ? ' mono' : ''}`}>{children}</span>
-}
 
 /** Five stars clipped to the exact ratio, so 4.2 and 4.7 do not look alike. */
 export function Rating({ rating }: { rating?: RatingType }) {

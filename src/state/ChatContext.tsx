@@ -18,7 +18,7 @@ import {
 } from 'react'
 
 import { AgentError, api } from '../lib/api'
-import type { ChatState, Message } from '../lib/types'
+import type { ChatReply, ChatState, CheckoutDetails, Message } from '../lib/types'
 
 const WELCOME: Message = {
   id: 'welcome',
@@ -47,6 +47,7 @@ type ChatContextValue = {
   sending: boolean
   exchangeTick: number
   send: (text: string) => void
+  submitCheckoutDetails: (details: CheckoutDetails) => void
   newChat: () => void
 }
 
@@ -70,11 +71,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const counter = useRef(0)
   const inFlight = useRef(false)
 
-  const send = useCallback((raw: string) => {
-    const text = raw.trim()
+  /** One turn: show `text` as the shopper's message, then the reply from `request`. */
+  const runTurn = useCallback((text: string, request: () => Promise<ChatReply>) => {
     // One turn at a time: the agent's session state is not reentrant, and
     // overlapping turns would interleave cart mutations.
-    if (!text || inFlight.current) return
+    if (inFlight.current) return
 
     inFlight.current = true
     setSending(true)
@@ -90,7 +91,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
     void (async () => {
       try {
-        const reply = await api.chat(text, sessionId.current)
+        const reply = await request()
         sessionId.current = reply.session_id
         setMessages((current) =>
           current.map((message) =>
@@ -127,6 +128,22 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     })()
   }, [])
 
+  const send = useCallback(
+    (raw: string) => {
+      const text = raw.trim()
+      if (text) runTurn(text, () => api.chat(text, sessionId.current))
+    },
+    [runTurn],
+  )
+
+  const submitCheckoutDetails = useCallback(
+    (details: CheckoutDetails) => {
+      const sid = sessionId.current
+      if (sid) runTurn('Delivery details', () => api.checkoutDetails(sid, details))
+    },
+    [runTurn],
+  )
+
   const newChat = useCallback(() => {
     sessionId.current = null
     counter.current = 0
@@ -136,8 +153,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const value = useMemo(
-    () => ({ messages, suggestions, state, sending, exchangeTick, send, newChat }),
-    [messages, suggestions, state, sending, exchangeTick, send, newChat],
+    () => ({ messages, suggestions, state, sending, exchangeTick, send, submitCheckoutDetails, newChat }),
+    [messages, suggestions, state, sending, exchangeTick, send, submitCheckoutDetails, newChat],
   )
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
