@@ -9,7 +9,7 @@
 import { formatAmount, titleCase } from '../../lib/format'
 import type { CheckoutView } from '../../lib/types'
 import { useChat } from '../../state/ChatContext'
-import { IconCheck } from '../icons'
+// import { IconCheck } from '../icons'  // used by the payment buttons, switched off for now
 
 function Totals({ totals, currency }: { totals: CheckoutView['totals']; currency: string }) {
   return (
@@ -122,6 +122,7 @@ export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
         </section>
       )}
 
+      {/* Payment is switched off for now; uncomment to bring the payment choices back.
       {checkout.instruments.length > 0 && (
         <section className="checkoutcard-section">
           <span className="section-label">Payment</span>
@@ -140,6 +141,7 @@ export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
           </div>
         </section>
       )}
+      */}
 
       {checkout.messages.length > 0 && (
         <div className="checkoutcard-messages">
@@ -154,9 +156,9 @@ export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
 
       <footer className="checkoutcard-foot">
         <Totals totals={checkout.totals} currency={checkout.currency} />
-        {/* Orders aren't placed from the chat for now: payment happens on the
-            store's own checkout page (UCP continue_url). Uncomment to bring
-            the place-order button back.
+        {/* Payment is switched off for now: checkout stops at reviewing the details.
+            Uncomment to bring back the place-order button, or the hand-off to the
+            store's own payment page (UCP continue_url), and the IconCheck import.
         <button
           type="button"
           className="btn btn-primary btn-block"
@@ -166,7 +168,6 @@ export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
           <IconCheck size={15} />
           {ready ? 'Place the order' : 'Complete the details above'}
         </button>
-        */}
         {checkout.continue_url && (
           <a
             className="btn btn-primary btn-block"
@@ -178,6 +179,7 @@ export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
             Continue to payment
           </a>
         )}
+        */}
         {checkout.links.length > 0 && (
           <div className="chip-row">
             {checkout.links.map((link) => (
