@@ -82,7 +82,6 @@ export function CartBlock({
           <span className="faint">Subtotal</span>
           <strong>{formatAmount(subtotal, currency)}</strong>
         </div>
-        {/* Checkout is switched off for now; uncomment to bring the button back.
         <button
           type="button"
           className="btn btn-primary"
@@ -91,7 +90,6 @@ export function CartBlock({
         >
           Checkout
         </button>
-        */}
       </footer>
     </div>
   )

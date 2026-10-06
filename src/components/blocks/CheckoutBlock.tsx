@@ -71,7 +71,7 @@ export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
             <div className="cartrow-main">
               <div className="cartrow-title">{line.title}</div>
               <div className="cartrow-meta">
-                {line.variant_label} · ×{line.quantity}
+                {line.variant_label && `${line.variant_label} · `}×{line.quantity}
               </div>
             </div>
             <strong>{formatAmount(line.line_total, checkout.currency)}</strong>
@@ -154,6 +154,9 @@ export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
 
       <footer className="checkoutcard-foot">
         <Totals totals={checkout.totals} currency={checkout.currency} />
+        {/* Orders aren't placed from the chat for now: payment happens on the
+            store's own checkout page (UCP continue_url). Uncomment to bring
+            the place-order button back.
         <button
           type="button"
           className="btn btn-primary btn-block"
@@ -163,6 +166,18 @@ export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
           <IconCheck size={15} />
           {ready ? 'Place the order' : 'Complete the details above'}
         </button>
+        */}
+        {checkout.continue_url && (
+          <a
+            className="btn btn-primary btn-block"
+            href={checkout.continue_url}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <IconCheck size={15} />
+            Continue to payment
+          </a>
+        )}
         {checkout.links.length > 0 && (
           <div className="chip-row">
             {checkout.links.map((link) => (

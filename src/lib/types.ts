@@ -126,6 +126,8 @@ export type CheckoutView = {
   instruments: { id: string; label: string; handler: string; selected: boolean }[]
   messages: UcpMessage[]
   links: { type: string; url: string; title?: string }[]
+  /** Where the buyer finishes on the store's own checkout page (UCP hand-off). */
+  continue_url?: string
 }
 
 export type OrderView = {
