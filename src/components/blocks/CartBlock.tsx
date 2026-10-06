@@ -33,7 +33,8 @@ export function CartBlock({
           <div className="cartrow-main">
             <div className="cartrow-title">{line.title}</div>
             <div className="cartrow-meta">
-              {line.variant_label} · {formatAmount(line.price, currency)} each
+              {line.variant_label && `${line.variant_label} · `}
+              {formatAmount(line.price, currency)} each
               {line.availability && line.availability !== 'in_stock' && (
                 <span className="badge warning">{titleCase(line.availability)}</span>
               )}
@@ -81,6 +82,7 @@ export function CartBlock({
           <span className="faint">Subtotal</span>
           <strong>{formatAmount(subtotal, currency)}</strong>
         </div>
+        {/* Checkout is switched off for now; uncomment to bring the button back.
         <button
           type="button"
           className="btn btn-primary"
@@ -89,6 +91,7 @@ export function CartBlock({
         >
           Checkout
         </button>
+        */}
       </footer>
     </div>
   )

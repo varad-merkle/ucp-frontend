@@ -78,7 +78,7 @@ export type ProductDetail = ProductCard & {
 export type CartLine = {
   variant_id: string
   title: string
-  variant_label: string
+  variant_label?: string
   image?: string
   price: number
   quantity: number
