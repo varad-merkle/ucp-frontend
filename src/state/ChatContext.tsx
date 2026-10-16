@@ -27,16 +27,16 @@ const WELCOME: Message = {
     {
       type: 'text',
       text:
-        "Hi! I'm the shopping assistant for **Pier 1**. Tell me what you're " +
-        "looking for and I'll pull it from the store's live catalog over UCP.",
+        "Hi! I'm your personal shopping assistant. Tell me what you're " +
+        "looking for and I'll pull it from the store's live catalog over UCP and help you make the purchase.",
     },
   ],
 }
 
 const OPENING_SUGGESTIONS = [
   'Table lamps under $150',
-  'Quilt sets',
-  'Rugs between $100 and $300',
+  'Wheel caps',
+  'Shoes between $100 and $300',
   'What can the store do?',
 ]
 

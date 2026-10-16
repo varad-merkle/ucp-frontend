@@ -47,9 +47,9 @@ export function Sidebar({
   return (
     <aside className="sidebar">
       <div className="brand">
-        <div className="brand-mark">P1</div>
+        <div className="brand-mark">SB</div>
         <div className="brand-text">
-          <strong>Pier 1</strong>
+          <strong>Shopper Bot</strong>
           <span>UCP shopping agent</span>
         </div>
       </div>
