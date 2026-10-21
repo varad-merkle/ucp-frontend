@@ -2,16 +2,18 @@ import { useEffect, useState } from 'react'
 
 import { Composer } from './components/Composer'
 import { MessageList } from './components/MessageList'
+import { ProfileDrawer } from './components/ProfileDrawer'
 import { ProtocolInspector } from './components/ProtocolInspector'
 import { Sidebar } from './components/Sidebar'
 import { ThemeToggle } from './components/ThemeToggle'
-import { IconCart, IconPlus, IconTerminal } from './components/icons'
+import { IconCart, IconPlus, IconTerminal, IconUser } from './components/icons'
 import { formatAmount } from './lib/format'
 import { useChat } from './state/ChatContext'
 
 export default function App() {
   const { exchangeTick, state, send, sending, newChat } = useChat()
   const [inspectorOpen, setInspectorOpen] = useState(false)
+  const [profileOpen, setProfileOpen] = useState(false)
   const [exchangeCount, setExchangeCount] = useState(0)
 
   // `/` toggles the protocol log, unless the composer has focus.
@@ -35,6 +37,7 @@ export default function App() {
     <div className="shell">
       <Sidebar
         onOpenInspector={() => setInspectorOpen(true)}
+        onOpenProfile={() => setProfileOpen(true)}
         inspectorCount={exchangeCount}
       />
 
@@ -54,6 +57,15 @@ export default function App() {
               aria-label="New chat"
             >
               <IconPlus size={15} />
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => setProfileOpen(true)}
+              aria-label="Profile"
+            >
+              <IconUser size={15} />
+              <span className="hide-sm">Profile</span>
             </button>
             <button
               type="button"
@@ -95,6 +107,8 @@ export default function App() {
         tick={exchangeTick}
         onCountChange={setExchangeCount}
       />
+
+      <ProfileDrawer open={profileOpen} onClose={() => setProfileOpen(false)} />
     </div>
   )
 }

@@ -148,6 +148,37 @@ export type CheckoutDetails = {
   country: string
 }
 
+/** The persisted buyer profile (GET/PATCH /api/profile). Empty fields are null. */
+export type BuyerProfile = {
+  first_name: string | null
+  last_name: string | null
+  email: string | null
+  phone: string | null
+}
+
+/** Market and language preferences, sent to stores as UCP `context` hints. */
+export type MarketPreferences = {
+  country: string | null
+  preferred_currency: string | null
+  language: string | null
+  region: string | null
+  postal_code: string | null
+}
+
+export type Profile = {
+  id: number
+  schema_version: number
+  buyer: BuyerProfile
+  market: MarketPreferences
+  updated_at: string
+}
+
+/** Only the keys present are changed; an explicit null clears a field. */
+export type ProfilePatch = {
+  buyer?: Partial<BuyerProfile>
+  market?: Partial<MarketPreferences>
+}
+
 export type OrderView = {
   id: string
   label?: string
