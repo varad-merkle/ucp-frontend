@@ -6,7 +6,7 @@ import { api } from '../lib/api'
 import { formatAmount } from '../lib/format'
 import type { Health } from '../lib/types'
 import { useChat } from '../state/ChatContext'
-import { IconPlus, IconRefresh, IconTerminal } from './icons'
+import { IconPlus, IconRefresh, IconTerminal, IconUser } from './icons'
 
 const STARTERS = [
   'Show me floor lamps',
@@ -18,9 +18,11 @@ const STARTERS = [
 
 export function Sidebar({
   onOpenInspector,
+  onOpenProfile,
   inspectorCount,
 }: {
   onOpenInspector: () => void
+  onOpenProfile: () => void
   inspectorCount: number
 }) {
   const { send, newChat, state, sending } = useChat()
@@ -75,6 +77,10 @@ export function Sidebar({
       </nav>
 
       <div className="sidebar-foot">
+        <button type="button" className="btn btn-ghost btn-block" onClick={onOpenProfile}>
+          <IconUser size={15} />
+          Profile
+        </button>
         <button type="button" className="btn btn-ghost btn-block" onClick={onOpenInspector}>
           <IconTerminal size={15} />
           Protocol log

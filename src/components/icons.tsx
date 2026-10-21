@@ -90,3 +90,10 @@ export const IconMoon = ({ size = 16 }: IconProps) => (
     <path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z" />
   </svg>
 )
+
+export const IconUser = ({ size = 16 }: IconProps) => (
+  <svg {...base(size)}>
+    <circle cx="12" cy="8" r="4" />
+    <path d="M4.5 20a7.5 7.5 0 0 1 15 0" />
+  </svg>
+)
