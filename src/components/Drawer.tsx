@@ -38,7 +38,15 @@ export function Drawer({
 
   return (
     <>
-      <div className="drawer-backdrop" onClick={onClose} />
+      {/* A button so the backdrop is a real control; Escape and the close button
+          already cover the keyboard, so it stays out of the tab order. */}
+      <button
+        type="button"
+        className="drawer-backdrop"
+        onClick={onClose}
+        tabIndex={-1}
+        aria-label="Close panel"
+      />
       <aside
         className={`drawer${wide ? ' wide' : ''}`}
         role="dialog"
