@@ -213,7 +213,6 @@ export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
         <div className="checkoutcard-messages">
           {messages.map((message, index) => (
             <div key={index} className={`message ${message.type}`}>
-              {message.code && <span className="message-code">{message.code}</span>}
               <span>{message.content}</span>
             </div>
           ))}

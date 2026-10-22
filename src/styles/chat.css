@@ -975,14 +975,6 @@
   background: var(--accent-soft);
 }
 
-.message-code {
-  flex: none;
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  color: var(--text-faint);
-  padding-top: 2px;
-}
-
 /* ==========================================================================
    Composer
    ========================================================================== */
