@@ -48,6 +48,13 @@ export type ProductCard = {
   option_name?: string
 }
 
+/** One of several things asked for at once, shown in its own column. */
+export type ProductGroup = {
+  title: string
+  stores: string[]
+  products: ProductCard[]
+}
+
 export type ProductOptionValue = {
   id?: string
   label: string
@@ -223,7 +230,7 @@ export type CapabilitiesView = {
 export type Block =
   | { type: 'text'; text: string }
   | { type: 'notice'; tone: 'error' | 'warning' | 'info'; text: string }
-  | { type: 'products'; products: ProductCard[] }
+  | { type: 'products'; products: ProductCard[]; groups?: ProductGroup[] }
   | { type: 'product'; product: ProductDetail }
   | { type: 'cart'; currency: string; subtotal: number; lines: CartLine[] }
   | { type: 'checkout'; checkout: CheckoutView }

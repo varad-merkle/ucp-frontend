@@ -3,7 +3,7 @@
 import { useState } from 'react'
 
 import { discountPercent, money, titleCase } from '../../lib/format'
-import type { CardVariant, ProductCard } from '../../lib/types'
+import type { CardVariant, ProductCard, ProductGroup } from '../../lib/types'
 import { useChat } from '../../state/ChatContext'
 import { Rating } from '../ui'
 import { IconCart } from '../icons'
@@ -129,11 +129,40 @@ function Card({ product }: { product: ProductCard }) {
   )
 }
 
-export function ProductsBlock({ products }: { products: ProductCard[] }) {
+function Cards({ products }: { products: ProductCard[] }) {
   return (
     <div className="pcards" role="list">
       {products.map((product) => (
         <Card key={product.id} product={product} />
+      ))}
+    </div>
+  )
+}
+
+export function ProductsBlock({
+  products,
+  groups,
+}: {
+  products: ProductCard[]
+  groups?: ProductGroup[]
+}) {
+  if (!groups?.length) return <Cards products={products} />
+
+  // Different things asked for at once: one column each, side by side.
+  return (
+    <div className="pgroups">
+      {groups.map((group, index) => (
+        <section key={index} className="pgroup" aria-label={group.title}>
+          <header className="pgroup-head">
+            <h3 className="pgroup-title">{titleCase(group.title)}</h3>
+            <span className="pgroup-stores">{group.stores.join(', ')}</span>
+          </header>
+          {group.products.length ? (
+            <Cards products={group.products} />
+          ) : (
+            <p className="pgroup-empty">No matching products.</p>
+          )}
+        </section>
       ))}
     </div>
   )

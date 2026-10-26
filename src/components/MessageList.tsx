@@ -28,7 +28,7 @@ function BlockView({ block }: { block: Block }) {
         </div>
       )
     case 'products':
-      return <ProductsBlock products={block.products} />
+      return <ProductsBlock products={block.products} groups={block.groups} />
     case 'product':
       return <ProductBlock product={block.product} />
     case 'cart':
