@@ -3,7 +3,6 @@
 import type {
   ChatReply,
   CheckoutDetails,
-  Exchange,
   Health,
   Profile,
   ProfilePatch,
@@ -66,6 +65,13 @@ export const api = {
       body: JSON.stringify({ session_id: sessionId, details }),
     }),
 
+  /** A cart card's Checkout button: opens the checkout for that store. */
+  startCheckout: (sessionId: string, store: string) =>
+    json<ChatReply>('/api/checkout/start', {
+      method: 'POST',
+      body: JSON.stringify({ session_id: sessionId, store }),
+    }),
+
   /** The saved buyer profile and market preferences. */
   profile: () => json<Profile>('/api/profile'),
 
@@ -77,9 +83,4 @@ export const api = {
     }),
 
   health: () => json<Health>('/api/health'),
-
-  exchanges: (limit = 40) =>
-    json<{ exchanges: Exchange[]; total: number }>(`/api/exchanges?limit=${limit}`),
-
-  clearExchanges: () => fetch('/api/exchanges', { method: 'DELETE' }),
 }

@@ -5,7 +5,6 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Markdown } from '../lib/markdown'
 import type { Block, Message } from '../lib/types'
 import { useChat } from '../state/ChatContext'
-import { CapabilitiesBlock } from './blocks/CapabilitiesBlock'
 import { CartBlock } from './blocks/CartBlock'
 import { CheckoutBlock } from './blocks/CheckoutBlock'
 import { OrderBlock } from './blocks/OrderBlock'
@@ -34,6 +33,8 @@ function BlockView({ block }: { block: Block }) {
     case 'cart':
       return (
         <CartBlock
+          store={block.store}
+          storeId={block.store_id}
           lines={block.lines}
           subtotal={block.subtotal}
           currency={block.currency}
@@ -43,8 +44,6 @@ function BlockView({ block }: { block: Block }) {
       return <CheckoutBlock checkout={block.checkout} />
     case 'order':
       return <OrderBlock order={block.order} />
-    case 'capabilities':
-      return <CapabilitiesBlock {...block} />
     default:
       return null
   }

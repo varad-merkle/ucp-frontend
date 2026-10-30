@@ -215,13 +215,133 @@
   color: var(--text-muted);
 }
 
-.conn-url {
-  margin-top: 3px;
-  padding-left: 14px;
-  color: var(--text-faint);
-  font-family: var(--font-mono);
+.store-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: var(--s-3) 0 0;
+  padding: var(--s-3) 0 0;
+  border-top: 1px solid var(--border);
+  list-style: none;
+}
+
+.store-row {
+  display: flex;
+  align-items: center;
+  gap: var(--s-2);
+  min-width: 0;
+  margin: 0 calc(-1 * var(--s-2));
+  padding: var(--s-1) var(--s-2);
+  border-radius: var(--r-sm);
+  color: inherit;
+  text-decoration: none;
+  transition: background var(--fast) var(--ease);
+}
+
+.store-row:hover,
+.store-row:focus-visible {
+  background: var(--surface-3);
+}
+
+.store-logo {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 26px;
+  padding: 2px;
+  flex: none;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--r-sm);
+  background: #fff;
+  color: #1c2130;
+  font-size: var(--text-xs);
+  font-weight: 600;
+}
+
+.store-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.store-text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.3;
+}
+
+.store-text strong {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.store-text span {
   font-size: 10px;
-  overflow-wrap: anywhere;
+  color: var(--text-faint);
+}
+
+.store-text span::first-letter {
+  text-transform: uppercase;
+}
+
+.avatar {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  border-radius: var(--r-full);
+  background: var(--accent-soft);
+  border: 1px solid var(--border-accent);
+  color: var(--accent-text);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.profile-btn {
+  max-width: 220px;
+  padding: 4px 12px 4px 4px;
+  border-radius: var(--r-full);
+}
+
+.user-card {
+  display: flex;
+  align-items: center;
+  gap: var(--s-3);
+  width: 100%;
+  padding: var(--s-2) var(--s-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  text-align: left;
+  transition: border-color var(--fast) var(--ease), background var(--fast) var(--ease);
+}
+
+.user-card:hover {
+  border-color: var(--border-hover);
+  background: var(--surface-3);
+}
+
+.user-card-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.user-card-text strong {
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.user-card-text span {
+  font-size: var(--text-xs);
+  color: var(--text-faint);
 }
 
 .cart-pill {
@@ -776,8 +896,7 @@
 }
 
 .checkoutcard-head,
-.ordercard-head,
-.capcard-head {
+.ordercard-head {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -787,8 +906,7 @@
 }
 
 .checkoutcard-head h4,
-.ordercard-head h4,
-.capcard-head h4 {
+.ordercard-head h4 {
   font-size: var(--text-base);
 }
 
@@ -959,45 +1077,6 @@
   color: var(--text-faint);
 }
 
-.caplist {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-2);
-  list-style: none;
-}
-
-.caplist li {
-  display: flex;
-  align-items: center;
-  gap: var(--s-2);
-}
-
-.caplist li > span:nth-child(2) {
-  flex: 1;
-  min-width: 0;
-}
-
-.caplist strong {
-  display: block;
-  font-size: var(--text-sm);
-  font-weight: 500;
-}
-
-.caplist code {
-  font-size: 10px;
-}
-
-.caplist-tick {
-  display: grid;
-  place-items: center;
-  width: 18px;
-  height: 18px;
-  flex: none;
-  border-radius: 50%;
-  background: var(--success-soft);
-  color: var(--success);
-}
-
 .message {
   display: flex;
   gap: var(--s-3);
@@ -1102,14 +1181,6 @@
   font-size: var(--text-xs);
   color: var(--text-faint);
   text-align: center;
-}
-
-.composer-hint kbd {
-  padding: 1px 5px;
-  border: 1px solid var(--border-strong);
-  border-radius: 4px;
-  background: var(--surface-2);
-  font-size: 10px;
 }
 
 /* ==========================================================================
@@ -1309,7 +1380,7 @@
 }
 
 /* ==========================================================================
-   Protocol inspector (drawer)
+   Drawer
    ========================================================================== */
 
 .drawer-backdrop {
@@ -1332,7 +1403,7 @@
   z-index: 41;
   display: flex;
   flex-direction: column;
-  width: min(var(--inspector-w), 100vw);
+  width: min(var(--drawer-w), 100vw);
   border-left: 1px solid var(--border);
   background: var(--surface);
   box-shadow: var(--shadow-lg);
@@ -1364,101 +1435,6 @@
   padding: var(--s-3) var(--s-4);
   border-top: 1px solid var(--border);
   background: var(--surface-2);
-}
-
-.exchange {
-  border: 1px solid var(--border);
-  border-radius: var(--r-md);
-  background: var(--surface-2);
-  overflow: hidden;
-}
-
-.exchange + .exchange {
-  margin-top: 6px;
-}
-
-.exchange-head {
-  display: flex;
-  align-items: center;
-  gap: var(--s-2);
-  width: 100%;
-  padding: var(--s-3);
-  text-align: left;
-}
-
-.exchange-head:hover {
-  background: var(--surface-3);
-}
-
-.exchange-method {
-  flex: none;
-  padding: 1px 6px;
-  border-radius: var(--r-sm);
-  background: var(--surface-3);
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--text-muted);
-}
-
-.exchange-path {
-  flex: 1;
-  min-width: 0;
-  font-family: var(--font-mono);
-  font-size: var(--text-xs);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.exchange-status {
-  flex: none;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 600;
-}
-
-.exchange-status.ok {
-  color: var(--success);
-}
-.exchange-status.bad {
-  color: var(--danger);
-}
-
-.exchange-time {
-  flex: none;
-  min-width: 52px;
-  text-align: right;
-  font-family: var(--font-mono);
-  font-size: 10px;
-  color: var(--text-faint);
-}
-
-.exchange-detail {
-  padding: 0 var(--s-3) var(--s-3);
-  border-top: 1px solid var(--border);
-}
-
-.json {
-  margin-top: 6px;
-  padding: var(--s-3);
-  max-height: 260px;
-  overflow: auto;
-  border-radius: var(--r-sm);
-  background: var(--code-bg);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 1.6;
-  color: var(--code-text);
-  white-space: pre;
-}
-
-.json-label {
-  margin-top: var(--s-3);
-  font-size: var(--text-xs);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-faint);
 }
 
 /* ==========================================================================

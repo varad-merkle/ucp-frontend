@@ -58,7 +58,7 @@ export function Composer() {
           ref={inputRef}
           rows={1}
           className="composer-input"
-          placeholder="Ask for anything — “show me table lamps under $150”"
+          placeholder="Search products or ask a question…"
           value={draft}
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={onKeyDown}
@@ -76,8 +76,7 @@ export function Composer() {
       </form>
 
       <p className="composer-hint">
-        Every turn is a live UCP call to the store. Press{' '}
-        <kbd>/</kbd> to open the protocol log.
+        Product, pricing and availability data come live from each store.
       </p>
     </div>
   )

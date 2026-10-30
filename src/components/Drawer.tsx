@@ -1,4 +1,4 @@
-/** Right-hand slide-over used by the cart, product detail and inspector. */
+/** Right-hand slide-over used by the cart, product detail and profile. */
 
 import { useEffect, type ReactNode } from 'react'
 

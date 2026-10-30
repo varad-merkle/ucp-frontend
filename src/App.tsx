@@ -3,49 +3,35 @@ import { useEffect, useState } from 'react'
 import { Composer } from './components/Composer'
 import { MessageList } from './components/MessageList'
 import { ProfileDrawer } from './components/ProfileDrawer'
-import { ProtocolInspector } from './components/ProtocolInspector'
 import { Sidebar } from './components/Sidebar'
 import { ThemeToggle } from './components/ThemeToggle'
-import { IconCart, IconPlus, IconTerminal, IconUser } from './components/icons'
-import { formatAmount } from './lib/format'
+import { IconCart, IconPlus, IconUser } from './components/icons'
+import { api } from './lib/api'
+import { buyerName, formatAmount, initials } from './lib/format'
+import type { Profile } from './lib/types'
 import { useChat } from './state/ChatContext'
 
 export default function App() {
-  const { exchangeTick, state, send, sending, newChat } = useChat()
-  const [inspectorOpen, setInspectorOpen] = useState(false)
+  const { state, send, sending, newChat } = useChat()
   const [profileOpen, setProfileOpen] = useState(false)
-  const [exchangeCount, setExchangeCount] = useState(0)
+  const [profile, setProfile] = useState<Profile | null>(null)
 
-  // `/` toggles the protocol log, unless the composer has focus.
+  // Load the saved profile once so the header can greet the buyer by name.
   useEffect(() => {
-    const onKeyDown = (event: KeyboardEvent) => {
-      const target = event.target as HTMLElement | null
-      const typing =
-        target?.tagName === 'INPUT' ||
-        target?.tagName === 'TEXTAREA' ||
-        target?.isContentEditable
-      if (event.key === '/' && !typing) {
-        event.preventDefault()
-        setInspectorOpen((open) => !open)
-      }
-    }
-    document.addEventListener('keydown', onKeyDown)
-    return () => document.removeEventListener('keydown', onKeyDown)
+    api.profile().then(setProfile).catch(() => setProfile(null))
   }, [])
+
+  const name = buyerName(profile?.buyer)
 
   return (
     <div className="shell">
-      <Sidebar
-        onOpenInspector={() => setInspectorOpen(true)}
-        onOpenProfile={() => setProfileOpen(true)}
-        inspectorCount={exchangeCount}
-      />
+      <Sidebar profile={profile} onOpenProfile={() => setProfileOpen(true)} />
 
       <div className="main">
         <header className="topbar">
           <div className="topbar-title">
-            <h1>Shopping assistant</h1>
-            <span className="faint">Powered by the Universal Commerce Protocol</span>
+            <h1>Shopping Assistant</h1>
+            <span className="faint">Search, compare and check out across partner stores</span>
           </div>
           <div className="topbar-actions">
             {/* The sidebar is hidden on narrow screens, so New chat needs a
@@ -57,24 +43,6 @@ export default function App() {
               aria-label="New chat"
             >
               <IconPlus size={15} />
-            </button>
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={() => setProfileOpen(true)}
-              aria-label="Profile"
-            >
-              <IconUser size={15} />
-              <span className="hide-sm">Profile</span>
-            </button>
-            <button
-              type="button"
-              className="btn btn-ghost"
-              onClick={() => setInspectorOpen(true)}
-            >
-              <IconTerminal size={15} />
-              <span className="hide-sm">Protocol log</span>
-              {exchangeCount > 0 && <span className="badge mono">{exchangeCount}</span>}
             </button>
             <button
               type="button"
@@ -93,6 +61,16 @@ export default function App() {
               )}
             </button>
             <ThemeToggle />
+            <button
+              type="button"
+              className="btn btn-ghost profile-btn"
+              onClick={() => setProfileOpen(true)}
+              aria-label={name ? `Profile: ${name}` : 'Profile'}
+              title={name ?? 'Profile'}
+            >
+              <span className="avatar">{name ? initials(name) : <IconUser size={14} />}</span>
+              <span className="hide-sm truncate">{name ?? 'Profile'}</span>
+            </button>
           </div>
         </header>
 
@@ -101,14 +79,11 @@ export default function App() {
         <Composer />
       </div>
 
-      <ProtocolInspector
-        open={inspectorOpen}
-        onClose={() => setInspectorOpen(false)}
-        tick={exchangeTick}
-        onCountChange={setExchangeCount}
+      <ProfileDrawer
+        open={profileOpen}
+        onClose={() => setProfileOpen(false)}
+        onSaved={setProfile}
       />
-
-      <ProfileDrawer open={profileOpen} onClose={() => setProfileOpen(false)} />
     </div>
   )
 }

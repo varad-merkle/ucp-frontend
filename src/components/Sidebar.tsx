@@ -1,29 +1,42 @@
-/** Left rail: new chat, starter prompts and connection status. */
+/** Left rail: new chat, starter prompts, signed-in buyer and connection status. */
 
 import { useCallback, useEffect, useState } from 'react'
 
 import { api } from '../lib/api'
-import { formatAmount } from '../lib/format'
-import type { Health } from '../lib/types'
+import { buyerName, formatAmount, initials } from '../lib/format'
+import type { Health, Profile, StoreStatus } from '../lib/types'
 import { useChat } from '../state/ChatContext'
-import { IconPlus, IconRefresh, IconTerminal, IconUser } from './icons'
+import { IconPlus, IconRefresh, IconUser } from './icons'
 
 const STARTERS = [
-  'Show me floor lamps',
-  'Throw pillows under $50',
-  'Accent chairs under $400',
-  'Rugs between $100 and $300',
-  'What can the store do?',
+  'Sectional sofas under $1,500',
+  'Area rugs for the living room',
+  'Papasan chairs',
+  'Sneakers for everyday wear',
+  'Car interior detailing kits',
+  'Dining sets for six',
 ]
 
+/** The store's logo, falling back to its initial when there is none or it fails to load. */
+function StoreLogo({ store }: { store: StoreStatus }) {
+  const [failed, setFailed] = useState(false)
+  return (
+    <span className="store-logo" aria-hidden="true">
+      {store.logo && !failed ? (
+        <img src={store.logo} alt="" onError={() => setFailed(true)} />
+      ) : (
+        store.name.charAt(0).toUpperCase()
+      )}
+    </span>
+  )
+}
+
 export function Sidebar({
-  onOpenInspector,
+  profile,
   onOpenProfile,
-  inspectorCount,
 }: {
-  onOpenInspector: () => void
+  profile: Profile | null
   onOpenProfile: () => void
-  inspectorCount: number
 }) {
   const { send, newChat, state, sending } = useChat()
   const [health, setHealth] = useState<Health | null>(null)
@@ -45,14 +58,15 @@ export function Sidebar({
   }, [refresh])
 
   const merchantOnline = Boolean(health?.merchant.reachable)
+  const name = buyerName(profile?.buyer)
 
   return (
     <aside className="sidebar">
       <div className="brand">
-        <div className="brand-mark">SB</div>
+        <div className="brand-mark">SA</div>
         <div className="brand-text">
-          <strong>Shopper Bot</strong>
-          <span>UCP shopping agent</span>
+          <strong>Shopping Assistant</strong>
+          <span>Powered by UCP</span>
         </div>
       </div>
 
@@ -62,7 +76,7 @@ export function Sidebar({
       </button>
 
       <nav className="starters" aria-label="Starter prompts">
-        <div className="nav-heading">Try asking</div>
+        <div className="nav-heading">Suggestions</div>
         {STARTERS.map((prompt) => (
           <button
             key={prompt}
@@ -77,14 +91,12 @@ export function Sidebar({
       </nav>
 
       <div className="sidebar-foot">
-        <button type="button" className="btn btn-ghost btn-block" onClick={onOpenProfile}>
-          <IconUser size={15} />
-          Profile
-        </button>
-        <button type="button" className="btn btn-ghost btn-block" onClick={onOpenInspector}>
-          <IconTerminal size={15} />
-          Protocol log
-          {inspectorCount > 0 && <span className="badge mono">{inspectorCount}</span>}
+        <button type="button" className="user-card" onClick={onOpenProfile}>
+          <span className="avatar">{name ? initials(name) : <IconUser size={14} />}</span>
+          <span className="user-card-text">
+            <strong className="truncate">{name ?? 'Set up your profile'}</strong>
+            <span className="truncate">{profile?.buyer.email ?? 'Add your name and email'}</span>
+          </span>
         </button>
 
         {state.cart_count > 0 && (
@@ -98,7 +110,7 @@ export function Sidebar({
 
         <div className="conn">
           <div className="row-between">
-            <span className="conn-label">Store</span>
+            <span className="conn-label">Stores</span>
             <button
               type="button"
               className="btn btn-ghost btn-icon"
@@ -114,14 +126,31 @@ export function Sidebar({
             <span className="truncate">
               {merchantOnline
                 ? (health?.merchant.name ?? 'Online')
-                : 'Unreachable — is the client running on :7000?'}
+                : 'Stores unavailable'}
             </span>
           </div>
-          <div className="conn-url">
-            {health?.agent.merchant_url ?? '—'}
-            {merchantOnline && ` · ${health?.merchant.latency_ms}ms`}
-          </div>
-          <div className="conn-url">UCP {health?.agent.version ?? '—'}</div>
+          {health?.stores && health.stores.length > 0 && (
+            <ul className="store-list">
+              {health.stores.map((store) => (
+                <li key={store.id}>
+                  <a
+                    className="store-row"
+                    href={store.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={`Visit ${store.name} (${store.online ? 'online' : 'offline'})`}
+                  >
+                    <StoreLogo store={store} />
+                    <span className="store-text">
+                      <strong className="truncate">{store.name}</strong>
+                      {store.category && <span className="truncate">{store.category}</span>}
+                    </span>
+                    <span className={`dot ${store.online ? 'ok' : 'bad'}`} />
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
       </div>
     </aside>

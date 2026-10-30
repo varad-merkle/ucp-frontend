@@ -1,6 +1,6 @@
 /** Presentation helpers. */
 
-import type { Money } from './types'
+import type { BuyerProfile, Money } from './types'
 
 const FORMATTERS = new Map<string, Intl.NumberFormat>()
 
@@ -58,7 +58,17 @@ export function formatTime(iso: string): string {
   }).format(new Date(iso))
 }
 
-export function shortCapability(name: string): string {
-  if (name === 'discovery' || name === 'unknown') return titleCase(name)
-  return name.replace(/^dev\.ucp\.shopping\./, '').replace(/\./g, ' · ')
+/** The buyer's full name, or null when neither name is saved. */
+export function buyerName(buyer: BuyerProfile | null | undefined): string | null {
+  const name = [buyer?.first_name, buyer?.last_name].filter(Boolean).join(' ').trim()
+  return name || null
+}
+
+/** Up to two initials for the avatar, e.g. "Jane Doe" -> "JD". */
+export function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('')
 }

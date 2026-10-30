@@ -214,28 +214,21 @@ export type OrderView = {
   }[]
 }
 
-export type CapabilitiesView = {
-  version?: string
-  business?: {
-    name?: string
-    description?: string
-    currency?: string
-    categories?: string[]
-    product_count?: number
-  }
-  capabilities: { name: string; version: string; spec?: string }[]
-  payment_handlers: { name: string; id: string; version: string }[]
-}
-
 export type Block =
   | { type: 'text'; text: string }
   | { type: 'notice'; tone: 'error' | 'warning' | 'info'; text: string }
   | { type: 'products'; products: ProductCard[]; groups?: ProductGroup[] }
   | { type: 'product'; product: ProductDetail }
-  | { type: 'cart'; currency: string; subtotal: number; lines: CartLine[] }
+  | {
+      type: 'cart'
+      store?: string | null
+      store_id?: string | null
+      currency: string
+      subtotal: number
+      lines: CartLine[]
+    }
   | { type: 'checkout'; checkout: CheckoutView }
   | { type: 'order'; order: OrderView }
-  | ({ type: 'capabilities' } & CapabilitiesView)
 
 export type ChatState = {
   cart_count: number
@@ -269,20 +262,15 @@ export type Health = {
     latency_ms: number
     name?: string | null
   }
+  stores?: StoreStatus[]
 }
 
-/** Metadata about one UCP request/response pair, for the protocol log. */
-export type Exchange = {
+/** One store in the sidebar list. `category` is the main thing it sells. */
+export type StoreStatus = {
   id: string
-  capability: string
-  method: string
+  name: string
   url: string
-  started_at: string
-  status: number
-  ok: boolean
-  duration_ms: number
-  request_headers: Record<string, string>
-  request_body?: unknown
-  response_body?: unknown
-  error?: string
+  logo: string | null
+  category: string | null
+  online: boolean
 }

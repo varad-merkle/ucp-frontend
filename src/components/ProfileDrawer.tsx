@@ -95,7 +95,15 @@ function Fields({
   )
 }
 
-export function ProfileDrawer({ open, onClose }: { open: boolean; onClose: () => void }) {
+export function ProfileDrawer({
+  open,
+  onClose,
+  onSaved,
+}: {
+  open: boolean
+  onClose: () => void
+  onSaved: (profile: Profile) => void
+}) {
   const [profile, setProfile] = useState<Profile | null>(null)
   const [values, setValues] = useState<Values>({})
   const [loading, setLoading] = useState(false)
@@ -137,6 +145,7 @@ export function ProfileDrawer({ open, onClose }: { open: boolean; onClose: () =>
       setProfile(updated)
       setValues(toValues(updated))
       setSaved(true)
+      onSaved(updated)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not save the profile.')
     } finally {

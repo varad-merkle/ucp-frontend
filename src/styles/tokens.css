@@ -82,7 +82,7 @@
   /* Layout */
   --sidebar-w: 248px;
   --topbar-h: 60px;
-  --inspector-w: 480px;
+  --drawer-w: 480px;
 }
 
 /* Light theme: only the colors change, everything else is shared. */

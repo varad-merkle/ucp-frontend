@@ -6,15 +6,23 @@ import { useChat } from '../../state/ChatContext'
 import { IconMinus, IconPlus, IconTrash } from '../icons'
 
 export function CartBlock({
+  store,
+  storeId,
   lines,
   subtotal,
   currency,
 }: {
+  store?: string | null
+  storeId?: string | null
   lines: CartLine[]
   subtotal: number
   currency: string
 }) {
-  const { send, sending } = useChat()
+  const { send, startCheckout, sending } = useChat()
+
+  // Each store checks out separately, so the button opens this card's store.
+  const checkout = () =>
+    storeId && store ? startCheckout(storeId, store) : send('Checkout')
 
   if (lines.length === 0) {
     return <div className="card-lite muted">Your cart is empty.</div>
@@ -86,9 +94,9 @@ export function CartBlock({
           type="button"
           className="btn btn-primary"
           disabled={sending}
-          onClick={() => send('Checkout')}
+          onClick={checkout}
         >
-          Checkout
+          {store ? `Checkout ${store}` : 'Checkout'}
         </button>
       </footer>
     </div>

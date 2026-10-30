@@ -27,17 +27,17 @@ const WELCOME: Message = {
     {
       type: 'text',
       text:
-        "Hi! I'm your personal shopping assistant. Tell me what you're " +
-        "looking for and I'll pull it from the store's live catalog over UCP and help you make the purchase.",
+        'Welcome. I can help you find products across our partner stores, ' +
+        'compare options and prepare your checkout. What are you looking for today?',
     },
   ],
 }
 
 const OPENING_SUGGESTIONS = [
-  'Table lamps under $150',
-  'Wheel caps',
-  'Shoes between $100 and $300',
-  'What can the store do?',
+  'A sofa for my living room',
+  'Allbirds slip-ons',
+  'Car cleaning products',
+  'Which stores can you shop at?',
 ]
 
 type ChatContextValue = {
@@ -45,9 +45,9 @@ type ChatContextValue = {
   suggestions: string[]
   state: ChatState
   sending: boolean
-  exchangeTick: number
   send: (text: string) => void
   submitCheckoutDetails: (details: CheckoutDetails) => void
+  startCheckout: (storeId: string, storeName: string) => void
   newChat: () => void
 }
 
@@ -65,7 +65,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [suggestions, setSuggestions] = useState<string[]>(OPENING_SUGGESTIONS)
   const [state, setState] = useState<ChatState>(EMPTY_STATE)
   const [sending, setSending] = useState(false)
-  const [exchangeTick, setExchangeTick] = useState(0)
 
   const sessionId = useRef<string | null>(null)
   const counter = useRef(0)
@@ -121,7 +120,6 @@ export function ChatProvider({ children }: { children: ReactNode }) {
         )
         setSuggestions(['Try again'])
       } finally {
-        setExchangeTick((tick) => tick + 1)
         inFlight.current = false
         setSending(false)
       }
@@ -144,6 +142,14 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     [runTurn],
   )
 
+  const startCheckout = useCallback(
+    (storeId: string, storeName: string) => {
+      const sid = sessionId.current
+      if (sid) runTurn(`Checkout ${storeName}`, () => api.startCheckout(sid, storeId))
+    },
+    [runTurn],
+  )
+
   const newChat = useCallback(() => {
     sessionId.current = null
     counter.current = 0
@@ -153,8 +159,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const value = useMemo(
-    () => ({ messages, suggestions, state, sending, exchangeTick, send, submitCheckoutDetails, newChat }),
-    [messages, suggestions, state, sending, exchangeTick, send, submitCheckoutDetails, newChat],
+    () => ({ messages, suggestions, state, sending, send, submitCheckoutDetails, startCheckout, newChat }),
+    [messages, suggestions, state, sending, send, submitCheckoutDetails, startCheckout, newChat],
   )
 
   return <ChatContext.Provider value={value}>{children}</ChatContext.Provider>
