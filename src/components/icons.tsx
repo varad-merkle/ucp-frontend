@@ -22,7 +22,13 @@ export const IconCart = ({ size = 16 }: IconProps) => (
   </svg>
 )
 
-export const IconClose = ({ size = 16 }: IconProps) => (
+export const IconLogout = ({ size = 16 }: IconProps) => (
+  <svg {...base(size)}>
+    <path d="M9 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h3M16 16l4-4-4-4M20 12H10" />
+  </svg>
+)
+
+export const IconClose =({ size = 16 }: IconProps) => (
   <svg {...base(size)}>
     <path d="M6 6l12 12M18 6 6 18" />
   </svg>

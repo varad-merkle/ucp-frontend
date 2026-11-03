@@ -5,14 +5,16 @@ import { MessageList } from './components/MessageList'
 import { ProfileDrawer } from './components/ProfileDrawer'
 import { Sidebar } from './components/Sidebar'
 import { ThemeToggle } from './components/ThemeToggle'
-import { IconCart, IconPlus, IconUser } from './components/icons'
+import { IconCart, IconLogout, IconPlus, IconUser } from './components/icons'
 import { api } from './lib/api'
 import { buyerName, formatAmount, initials } from './lib/format'
 import type { Profile } from './lib/types'
+import { useAuth } from './state/AuthContext'
 import { useChat } from './state/ChatContext'
 
 export default function App() {
   const { state, send, sending, newChat } = useChat()
+  const { username, logout } = useAuth()
   const [profileOpen, setProfileOpen] = useState(false)
   const [profile, setProfile] = useState<Profile | null>(null)
 
@@ -21,7 +23,8 @@ export default function App() {
     api.profile().then(setProfile).catch(() => setProfile(null))
   }, [])
 
-  const name = buyerName(profile?.buyer)
+  // Fall back to the login name until the buyer profile has a real name.
+  const name = buyerName(profile?.buyer) ?? username
 
   return (
     <div className="shell">
@@ -70,6 +73,15 @@ export default function App() {
             >
               <span className="avatar">{name ? initials(name) : <IconUser size={14} />}</span>
               <span className="hide-sm truncate">{name ?? 'Profile'}</span>
+            </button>
+            <button
+              type="button"
+              className="btn btn-ghost"
+              onClick={() => void logout()}
+              aria-label="Sign out"
+              title={`Sign out${username ? ` (${username})` : ''}`}
+            >
+              <IconLogout size={15} />
             </button>
           </div>
         </header>

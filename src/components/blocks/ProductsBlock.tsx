@@ -71,6 +71,9 @@ function Card({ product }: { product: ProductCard }) {
       </button>
 
       <div className="pcard-body">
+        {/* Variable-length details scroll inside a fixed-height card, so every
+            store's cards line up and price + button stay at the same spot. */}
+        <div className="pcard-info">
         {product.brand && <div className="pcard-brand">{product.brand}</div>}
         <button
           type="button"
@@ -107,6 +110,7 @@ function Card({ product }: { product: ProductCard }) {
             </div>
           </div>
         )}
+        </div>
 
         <div className="pcard-price">
           <strong>{money(price)}</strong>
