@@ -1,0 +1,12 @@
+{
+    "rewrites": [
+        {
+            "source": "/api/:path*",
+            "destination": "https://ucp-client-a11f47bfe734.herokuapp.com*"
+        },
+        {
+            "source": "/profile/:path*",
+            "destination": "https://ucp-client-a11f47bfe734.herokuapp.com*"
+        }
+    ]
+}
