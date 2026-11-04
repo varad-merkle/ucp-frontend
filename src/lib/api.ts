@@ -4,6 +4,7 @@ import type {
   ChatReply,
   CheckoutDetails,
   Health,
+  IdentityStatus,
   Profile,
   ProfilePatch,
 } from './types'
@@ -88,10 +89,7 @@ async function json<T>(path: string, init?: RequestInit): Promise<T> {
     onUnauthorized()
   }
   if (!response.ok) {
-    const detail =
-      response.status === 422 || response.status === 401
-        ? await errorDetail(response)
-        : null
+    const detail = await errorDetail(response)
     throw new AgentError(detail ?? `${path} failed with status ${response.status}`)
   }
   return (await response.json()) as T
@@ -153,4 +151,23 @@ export const api = {
     }),
 
   health: () => json<Health>('/api/health'),
+
+  /** Identity linking status: the Shop account and each store. */
+  identity: () => json<IdentityStatus>('/api/identity'),
+
+  /**
+   * Start linking Shop accounts ('shop') or one store. Sends the browser to the sign-in
+   * page; the server's callback brings it back here with ?identity=linked|error.
+   */
+  linkIdentity: async (target: string) => {
+    const { authorize_url } = await json<{ authorize_url: string }>('/api/identity/link', {
+      method: 'POST',
+      body: JSON.stringify({ target }),
+    })
+    window.location.assign(authorize_url)
+  },
+
+  /** Unlink (the server revokes the tokens first); returns the new status. */
+  unlinkIdentity: (target: string) =>
+    json<IdentityStatus>(`/api/identity/${encodeURIComponent(target)}`, { method: 'DELETE' }),
 }

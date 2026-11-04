@@ -12,9 +12,20 @@ import { useState, type FormEvent } from 'react'
 import { formatAmount, titleCase } from '../../lib/format'
 import type { CheckoutDetails, CheckoutView, UcpMessage } from '../../lib/types'
 import { useChat } from '../../state/ChatContext'
+import { IconExternal } from '../icons'
 // import { IconCheck } from '../icons'  // used by the payment buttons, switched off for now
 
 type Field = keyof CheckoutDetails
+
+/** The UCP checkout statuses, in words a shopper understands. Unknown ones fall back to the raw value. */
+const STATUS: Record<string, { label: string; hint: string; tone: 'success' | 'warning' | 'neutral' }> = {
+  incomplete: { label: 'Details needed', hint: 'Add the details below to continue', tone: 'warning' },
+  requires_escalation: { label: 'Finish on store', hint: 'The store needs you on its own page', tone: 'warning' },
+  ready_for_complete: { label: 'Ready', hint: 'All details are in: continue to payment', tone: 'success' },
+  complete_in_progress: { label: 'Placing order', hint: 'The store is placing the order', tone: 'neutral' },
+  completed: { label: 'Order placed', hint: 'The store has placed the order', tone: 'success' },
+  canceled: { label: 'Canceled', hint: 'This checkout was canceled', tone: 'neutral' },
+}
 
 // Placeholders describe the field rather than show sample values, so they aren't mistaken for defaults.
 const FIELDS: { name: Field; label: string; placeholder: string; type?: string; wide?: boolean }[] = [
@@ -47,6 +58,10 @@ function fieldFor(message: UcpMessage): Field | null {
     [/street|address/, 'street_address'],
   ]
   return rules.find(([pattern]) => pattern.test(text))?.[1] ?? null
+}
+
+function isBuyerOnly(message: UcpMessage): boolean {
+  return message.severity === 'requires_buyer_input' || message.severity === 'requires_buyer_review'
 }
 
 function DetailsForm({ initial, errors }: { initial: CheckoutDetails; errors: Partial<Record<Field, string>> }) {
@@ -113,12 +128,18 @@ function Totals({ totals, currency }: { totals: CheckoutView['totals']; currency
 
 export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
   const { send, sending } = useChat()
-  const ready = checkout.status === 'ready_for_complete'
   const open = !['completed', 'canceled'].includes(checkout.status)
   // Store errors about a detail the form collects are shown next to that field;
   // everything else stays in the card's message list.
   const errors: Partial<Record<Field, string>> = {}
+  // The same last step for every store: continue on the store's own checkout page.
+  const storeUrl = open ? checkout.continue_url : null
+  // Messages only the buyer can resolve on the store's page (UCP requires_buyer_input /
+  // requires_buyer_review, e.g. "An extension interaction is required…"). When the card
+  // offers the store's page, the continue section explains them in plain words instead.
+  const buyerOnly = checkout.messages.filter((message) => isBuyerOnly(message))
   const messages = checkout.messages.filter((message) => {
+    if (storeUrl && isBuyerOnly(message)) return false
     const field = message.type === 'error' ? fieldFor(message) : null
     if (open && field) errors[field] ??= message.content
     return !(open && field)
@@ -126,13 +147,15 @@ export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
 
   return (
     <div className="card-lite checkoutcard">
+      {/* checkout.id is the store's opaque handle (a gid with an access key): UCP has
+          platforms pass it back to the store, never show it, so it stays out of the card. */}
       <header className="checkoutcard-head">
         <div>
-          <h4>Checkout</h4>
-          <code className="faint">{checkout.id}</code>
+          <h4>{checkout.store ? `${checkout.store} checkout` : 'Checkout'}</h4>
+          <span className="faint">{STATUS[checkout.status]?.hint ?? titleCase(checkout.status)}</span>
         </div>
-        <span className={`badge ${ready ? 'success' : 'warning'}`}>
-          {titleCase(checkout.status)}
+        <span className={`badge ${STATUS[checkout.status]?.tone ?? 'warning'}`}>
+          {STATUS[checkout.status]?.label ?? titleCase(checkout.status)}
         </span>
       </header>
 
@@ -219,31 +242,39 @@ export function CheckoutBlock({ checkout }: { checkout: CheckoutView }) {
         </div>
       )}
 
+      {storeUrl && (
+        <section className="checkoutcard-section handoff">
+          <p>
+            Payment and placing the order happen on {checkout.store ?? 'the store'}’s own checkout
+            page.
+            {buyerOnly.length > 0 && (
+              <span title={buyerOnly.map((message) => message.content).join(' ')}>
+                {' '}It also has a step only you can complete there, such as a required checkbox or
+                choice.
+              </span>
+            )}
+          </p>
+          <a className="btn btn-primary btn-block" href={storeUrl} target="_blank" rel="noopener noreferrer">
+            Continue to payment on {checkout.store ?? 'the store'}
+            <IconExternal size={14} />
+          </a>
+        </section>
+      )}
+
       <footer className="checkoutcard-foot">
         <Totals totals={checkout.totals} currency={checkout.currency} />
-        {/* Payment is switched off for now: checkout stops at reviewing the details.
-            Uncomment to bring back the place-order button, or the hand-off to the
-            store's own payment page (UCP continue_url), and the IconCheck import.
+        {/* Placing the order from here (UCP complete_checkout) is switched off: payment happens
+            on the store's own page, through the continue section above. Uncomment to bring back
+            the place-order button, with the IconCheck import.
         <button
           type="button"
           className="btn btn-primary btn-block"
-          disabled={sending || !ready}
+          disabled={sending || checkout.status !== 'ready_for_complete'}
           onClick={() => send('Place the order')}
         >
           <IconCheck size={15} />
-          {ready ? 'Place the order' : 'Complete the details above'}
+          {checkout.status === 'ready_for_complete' ? 'Place the order' : 'Complete the details above'}
         </button>
-        {checkout.continue_url && (
-          <a
-            className="btn btn-primary btn-block"
-            href={checkout.continue_url}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <IconCheck size={15} />
-            Continue to payment
-          </a>
-        )}
         */}
         {checkout.links.length > 0 && (
           <div className="chip-row">

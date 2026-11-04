@@ -138,8 +138,13 @@ export type CheckoutView = {
   links: { type: string; url: string; title?: string }[]
   /** Details the shopper entered, to pre-fill the delivery details form. */
   details: CheckoutDetails
-  /** Where the buyer finishes on the store's own checkout page (UCP hand-off). */
-  continue_url?: string
+  /**
+   * The store's own checkout page (UCP continue_url), where payment and placing the order
+   * happen. Set by the backend once nothing fixable is left, for every store. Always https.
+   */
+  continue_url?: string | null
+  /** The store's name, e.g. "Pier 1". */
+  store?: string
 }
 
 /** The checkout card's delivery details form. Country is a two-letter ISO code. */
@@ -273,4 +278,27 @@ export type StoreStatus = {
   logo: string | null
   category: string | null
   online: boolean
+}
+
+/** GET /api/identity: identity linking (dev.ucp.common.identity_linking) for this user. */
+export type IdentityStatus = {
+  /** False until the server has IDENTITY_TOKEN_KEY and store credentials: hide everything. */
+  enabled: boolean
+  /** Shop accounts: one sign-in that links every store that trusts it. */
+  shop: { linked: boolean; account: string | null }
+  stores: IdentityStore[]
+}
+
+export type IdentityStore = {
+  id: string
+  name: string
+  /** The store offers identity linking. */
+  supported: boolean
+  /** The server has client credentials for it. */
+  configured: boolean
+  linked: boolean
+  /** 'chained' = linked through Shop accounts, 'oauth' = signed in to the store directly. */
+  via: 'chained' | 'oauth' | null
+  /** Why linking through Shop accounts failed; signing in to the store directly may still work. */
+  error: string | null
 }

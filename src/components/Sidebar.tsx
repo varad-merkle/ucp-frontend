@@ -7,6 +7,7 @@ import { buyerName, formatAmount, initials } from '../lib/format'
 import type { Health, Profile, StoreStatus } from '../lib/types'
 import { useChat } from '../state/ChatContext'
 import { IconPlus, IconRefresh, IconUser } from './icons'
+import { IdentityPanel } from './IdentityPanel'
 
 const STARTERS = [
   'Sectional sofas under $1,500',
@@ -98,6 +99,8 @@ export function Sidebar({
             <span className="truncate">{profile?.buyer.email ?? 'Add your name and email'}</span>
           </span>
         </button>
+
+        <IdentityPanel />
 
         {state.cart_count > 0 && (
           <div className="conn cart-pill">

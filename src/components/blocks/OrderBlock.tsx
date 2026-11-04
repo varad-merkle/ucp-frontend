@@ -14,7 +14,8 @@ export function OrderBlock({ order }: { order: OrderView }) {
           <IconCheck size={18} />
         </span>
         <div>
-          <h4>Order {order.label ?? order.id}</h4>
+          {/* UCP: `label` is the store's order number for people (e.g. "#1001"); `id` is an opaque gid. */}
+          <h4>{order.label ? `Order ${order.label}` : 'Order placed'}</h4>
           <span className="faint">
             {order.method}
             {order.expected_on && ` · expected ${formatDate(order.expected_on)}`}
