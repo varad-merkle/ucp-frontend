@@ -1,0 +1,8 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    { "source": "/api/:path*", "destination": "https://ucp-client-a11f47bfe734.herokuapp.com/api/:path*" },
+    { "source": "/profile.json", "destination": "https://ucp-client-a11f47bfe734.herokuapp.com/profile.json" },
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}
