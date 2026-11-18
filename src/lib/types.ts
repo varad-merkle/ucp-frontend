@@ -126,6 +126,63 @@ export type CheckoutView = {
   instruments: { id: string; label: string; handler: string; selected: boolean }[]
   messages: UcpMessage[]
   links: { type: string; url: string; title?: string }[]
+  /** Details the shopper entered, to pre-fill the delivery details form. */
+  details: CheckoutDetails
+  /** Where the buyer finishes on the store's own checkout page (UCP hand-off). */
+  continue_url?: string
+}
+
+/** The checkout card's delivery details form. Country is a two-letter ISO code. */
+export type CheckoutDetails = {
+  email: string
+  first_name: string
+  last_name: string
+  phone: string
+  street_address: string
+  city: string
+  region: string
+  postal_code: string
+  country: string
+}
+
+/** The persisted buyer profile (GET/PATCH /api/profile). Empty fields are null. */
+export type BuyerProfile = {
+  first_name: string | null
+  last_name: string | null
+  email: string | null
+  phone: string | null
+}
+
+/** Market and language preferences, sent to stores as UCP `context` hints. */
+export type MarketPreferences = {
+  country: string | null
+  preferred_currency: string | null
+  language: string | null
+  region: string | null
+  postal_code: string | null
+}
+
+export type DetectedLocation = {
+  city: string
+  country: string
+  preferred_currency: string
+  language: string
+  region: string
+  postal_code: string
+}
+
+export type Profile = {
+  id: number
+  schema_version: number
+  buyer: BuyerProfile
+  market: MarketPreferences
+  updated_at: string
+}
+
+/** Only the keys present are changed; an explicit null clears a field. */
+export type ProfilePatch = {
+  buyer?: Partial<BuyerProfile>
+  market?: Partial<MarketPreferences>
 }
 
 export type OrderView = {
